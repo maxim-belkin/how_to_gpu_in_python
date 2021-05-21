@@ -1,0 +1,74 @@
+#!/bin/sh
+#
+# A Git hook that is called upon execution of every `git commit`.
+# This hook verifies that:
+# 1. Files don't have non-ASCII characters
+# 2. Jupyter notebooks don't have output cells.
+#
+# The first check can be disabled by setting 'hooks.allownonascii' to true
+# The second check can be disabled by setting 'hooks.allowoutputcells' to true
+#
+# Based on:
+# 1. git-commit.sample
+# 2. https://jamesfolberth.org/articles/2017/08/07/git-commit-hook-for-jupyter-notebooks/
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+  against=HEAD
+else
+  # Initial commit: diff against an empty tree object
+  against=$(git hash-object -t tree /dev/null)
+fi
+
+allownonascii=$(git config --type=bool hooks.allownonascii)
+allowoutputcells=$(git config --type=bool hooks.allowoutputcells)
+
+exec 1>&2
+
+if [ "$allownonascii" != "true" ] &&
+  test $(git diff --cached --name-only --diff-filter=A -z "$against" |
+    LC_ALL=C tr -d '[ -~]\0' | wc -c) != 0
+then
+  cat <<\EOF
+Error: Attempt to add a non-ASCII file name.
+This can cause problems if you want to work with people on other platforms.
+To be portable it is advisable to rename the file.
+
+You can disable this check either permanently:
+  git config hooks.allownonascii true
+or temporary:
+  git -c hooks.allownonascii commit ...
+EOF
+  exit 1
+fi
+
+if [ "$allowoutputcells" != "true" ]
+then
+  OLDIFS=$IFS
+  IFS="
+"
+  notebooks_with_output_cells=
+  for filename in $(git diff --cached --name-only --diff-filter=d "$against" -- '*.ipynb')
+  do
+    if test $(git show :"$filename" | grep -cm1 '"output_type":') -eq 1
+    then
+      notebooks_with_output_cells="${notebooks_with_output_cells:+$notebooks_with_output_cells
+}  * $filename"
+    fi
+  done
+  IFS=$OLDIFS
+
+  if [ -n "$notebooks_with_output_cells" ]
+  then
+    cat <<EOF
+Error: You appear to be committing Jupyter notebooks that contain output cells:
+$notebooks_with_output_cells
+
+You can disable this check either permanently:
+  git config hooks.allowoutputcells true
+or temporarily:
+  git -c hooks.allowoutputcells commit ...
+EOF
+    exit 1
+  fi
+fi
