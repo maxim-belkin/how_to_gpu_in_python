@@ -1,9 +1,10 @@
 ## Utilities
 
+Git hooks and others scripts for working with this repository.
 
-### `pre-commit`
+### `pre-commit` hook script
 
-A Git hook that verifies that:
+Our pre-commit Git hook verifies that:
 
 1. Added files don't have non-ASCII characters in their names.
 2. Jupyter notebooks don't have output cells.
