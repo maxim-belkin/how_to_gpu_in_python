@@ -1,0 +1,11 @@
+A couple observations on cupy having tried some examples this morning:
+
+1.  Not all of numpy is covered, see: https://docs.cupy.dev/en/stable/reference/comparison.html , 
+  not much sparse-matrix compared to numpy for example
+2.  It’s not quite as simple as : sed -e s/numpy/cupy/g   , 
+  in particular you still have to manage data movement if you need to work with arrays in the host environment 
+  (plotting, printing results, post-processing )
+3.  A good cupy program is going to have a layout and flow a lot like a good CUDA program (like it or leave it ).  
+  The data movement should be minimized and happen together in bunches.  
+  cupy routines should be numerous and operate on large arrays (think millions not thousands of elements).  
+  There needs to be enough cupy work on the gpu to make it all “worth it”.
