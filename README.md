@@ -10,6 +10,9 @@ This repository demonstrates available strategies for using GPUs in Python.
    You can use [Jupyter Lab] or [Google Colaboratory].  
    Note that Google Colaboratory provides cloud-based Jupyter-like environment with GPUs.
 
+## Tools
+
+1. [CuPy notebook](./cupy/cupy.ipynb)
 
 [Jupyter Lab]: https://jupyter.org/
 [Google Colaboratory]: https://colab.research.google.com/
