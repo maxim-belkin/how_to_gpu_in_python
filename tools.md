@@ -6,12 +6,13 @@
 
 ## Python solutions
 
-* Direct
+* General-purpose computing on GPUs (GPGPU)
     * PyCUDA:       https://documen.tician.de/pycuda/
     * PyOpenCL:     https://documen.tician.de/pyopencl/ 
-* Indirect
+* Special-purpose software
     * Numba:        https://github.com/numba/numba
     * CuPy:         https://cupy.dev/
+    * PyCLBlast:    https://github.com/CNugteren/CLBlast/tree/master/src/pyclblast
     * Rapids AI:    https://rapids.ai/
         * cuDF:         https://github.com/rapidsai/cudf
         * cuML:         https://github.com/rapidsai/cuml
@@ -28,6 +29,7 @@
 
 ## Other solutions
 
+* CLBlast:      https://github.com/CNugteren/CLBlast/
 * SWIG:         http://www.swig.org/
 * CUDA C APIs
     * cuFFT:        https://docs.nvidia.com/cuda/cufft/index.html
